@@ -68,6 +68,7 @@ function createStaticLeaves() {
 createStaticLeaves();
 
 document.addEventListener('DOMContentLoaded', function() {
+    initializeLockScreen();
     initializePetals();
     initializeMusicToggle();
     initializeScrollAnimations();
@@ -80,6 +81,178 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.documentElement.style.scrollBehavior = 'smooth';
 });
+
+function initializeLockScreen() {
+    const lockScreen = document.getElementById('lockScreen');
+    const lockCard = lockScreen ? lockScreen.querySelector('.lock-card') : null;
+    const unlockSequence = document.getElementById('unlockSequence');
+    const countdownNumber = document.getElementById('countdownNumber');
+    const blastScreen = document.getElementById('blastScreen');
+    const enterSiteBtn = document.getElementById('enterSiteBtn');
+    const lockToast = document.getElementById('lockToast');
+    const lockPinDisplay = document.getElementById('lockPinDisplay');
+    const pinBoxes = lockPinDisplay ? lockPinDisplay.querySelectorAll('.pin-box') : [];
+    const dialPad = document.getElementById('dialPad');
+    const lockBackBtn = document.getElementById('lockBackBtn');
+    const lockClearBtn = document.getElementById('lockClearBtn');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const lockError = document.getElementById('lockError');
+
+    if (!lockScreen || !lockCard || !unlockSequence || !countdownNumber || !blastScreen || !enterSiteBtn || !lockPinDisplay || !dialPad || !unlockBtn || !lockError || !lockToast) {
+        return;
+    }
+
+    const CORRECT_ANSWER = '08112025';
+    const LOCK_DURATION_MS = 10 * 60 * 1000;
+    let currentPin = '';
+    let countdownInterval = null;
+    let lockToastTimer = null;
+    let autoRelockTimer = null;
+
+    const renderPin = function() {
+        pinBoxes.forEach((box, index) => {
+            box.classList.toggle('filled', index < currentPin.length);
+        });
+    };
+
+    const showToast = function(message) {
+        lockToast.textContent = message;
+        lockToast.classList.add('show');
+        clearTimeout(lockToastTimer);
+        lockToastTimer = setTimeout(() => {
+            lockToast.classList.remove('show');
+        }, 2600);
+    };
+
+    const resetUnlockSequence = function() {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+        countdownNumber.textContent = '10';
+        blastScreen.classList.remove('active');
+        enterSiteBtn.classList.remove('show');
+        unlockSequence.classList.add('hidden');
+        lockCard.classList.remove('hidden');
+    };
+
+    const pauseAllAudio = function() {
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const songAudio = document.getElementById('songAudio');
+
+        if (backgroundMusic) {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+        }
+
+        if (songAudio) {
+            songAudio.pause();
+            songAudio.currentTime = 0;
+        }
+    };
+
+    const relockWebsite = function() {
+        document.body.classList.add('site-locked');
+        lockScreen.classList.remove('hidden', 'unlocked');
+        currentPin = '';
+        lockError.classList.remove('show');
+        renderPin();
+        resetUnlockSequence();
+        pauseAllAudio();
+    };
+
+    const scheduleAutoRelock = function() {
+        clearTimeout(autoRelockTimer);
+        autoRelockTimer = setTimeout(() => {
+            relockWebsite();
+            showToast('Session locked again. Dial with love to re-enter.');
+        }, LOCK_DURATION_MS);
+    };
+
+    const startUnlockSequence = function() {
+        lockCard.classList.add('hidden');
+        unlockSequence.classList.remove('hidden');
+        lockError.classList.remove('show');
+        blastScreen.classList.remove('active');
+        enterSiteBtn.classList.remove('show');
+
+        let counter = 10;
+        countdownNumber.textContent = String(counter);
+
+        clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+            counter -= 1;
+            if (counter >= 1) {
+                countdownNumber.textContent = String(counter);
+                return;
+            }
+
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            countdownNumber.textContent = '';
+            blastScreen.classList.add('active');
+
+            setTimeout(() => {
+                enterSiteBtn.classList.add('show');
+            }, 1200);
+        }, 1000);
+    };
+
+    const tryUnlock = function() {
+        if (currentPin === CORRECT_ANSWER) {
+            startUnlockSequence();
+            return;
+        }
+
+        lockError.classList.add('show');
+        showToast('Oops, that date made Cupid cry. Try again, detective.');
+        currentPin = '';
+        renderPin();
+    };
+
+    dialPad.addEventListener('click', function(e) {
+        const key = e.target.closest('.dial-key');
+        if (!key || !key.dataset.digit) {
+            return;
+        }
+
+        if (currentPin.length >= CORRECT_ANSWER.length) {
+            return;
+        }
+
+        currentPin += key.dataset.digit;
+        renderPin();
+        lockError.classList.remove('show');
+    });
+
+    if (lockBackBtn) {
+        lockBackBtn.addEventListener('click', function() {
+            currentPin = currentPin.slice(0, -1);
+            renderPin();
+            lockError.classList.remove('show');
+        });
+    }
+
+    if (lockClearBtn) {
+        lockClearBtn.addEventListener('click', function() {
+            currentPin = '';
+            renderPin();
+            lockError.classList.remove('show');
+        });
+    }
+
+    unlockBtn.addEventListener('click', tryUnlock);
+
+    enterSiteBtn.addEventListener('click', function() {
+        lockScreen.classList.add('unlocked');
+        setTimeout(() => {
+            lockScreen.classList.add('hidden');
+            document.body.classList.remove('site-locked');
+        }, 380);
+        scheduleAutoRelock();
+    });
+
+    renderPin();
+    resetUnlockSequence();
+}
 
 function initializeTouchInteractions() {
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;

@@ -15,7 +15,53 @@
 			rel="stylesheet"
 		/>
 	</head>
-	<body>
+	<body class="site-locked">
+		<div class="lock-screen" id="lockScreen">
+			<div class="lock-card">
+				<p class="lock-tag">Private Birthday Space</p>
+				<h2 class="lock-title">Unlock To Enter</h2>
+				<p class="lock-question">Date when we first met</p>
+				<div class="lock-pin-display" id="lockPinDisplay" aria-label="PIN display">
+					<span class="pin-box"></span>
+					<span class="pin-box"></span>
+					<span class="pin-box"></span>
+					<span class="pin-box"></span>
+					<span class="pin-box"></span>
+					<span class="pin-box"></span>
+					<span class="pin-box"></span>
+					<span class="pin-box"></span>
+				</div>
+				<div class="dial-pad" id="dialPad">
+					<button class="dial-key" type="button" data-digit="1">1</button>
+					<button class="dial-key" type="button" data-digit="2">2</button>
+					<button class="dial-key" type="button" data-digit="3">3</button>
+					<button class="dial-key" type="button" data-digit="4">4</button>
+					<button class="dial-key" type="button" data-digit="5">5</button>
+					<button class="dial-key" type="button" data-digit="6">6</button>
+					<button class="dial-key" type="button" data-digit="7">7</button>
+					<button class="dial-key" type="button" data-digit="8">8</button>
+					<button class="dial-key" type="button" data-digit="9">9</button>
+					<button class="dial-key dial-empty" type="button" disabled aria-hidden="true"></button>
+					<button class="dial-key" type="button" data-digit="0">0</button>
+					<button class="dial-key" id="lockBackBtn" type="button" aria-label="Backspace">⌫</button>
+				</div>
+				<div class="lock-actions">
+					<button id="lockClearBtn" type="button">Clear</button>
+					<button id="unlockBtn" type="button">Unlock</button>
+				</div>
+				<p class="lock-error" id="lockError">Wrong answer. Try again.</p>
+			</div>
+			<div class="unlock-sequence hidden" id="unlockSequence">
+				<p class="unlock-welcome">Welcome to your surprise</p>
+				<div class="countdown-number" id="countdownNumber">10</div>
+				<div class="blast-screen" id="blastScreen">Happy Birthday!</div>
+				<button id="enterSiteBtn" class="enter-site-btn" type="button" aria-label="Enter website">
+					<span class="enter-arrow">→</span>
+					<span>Enter</span>
+				</button>
+			</div>
+		</div>
+		<div class="lock-toast" id="lockToast"></div>
 		<div class="petals-container" id="petals"></div>
 
 		<div class="audio-controls">
