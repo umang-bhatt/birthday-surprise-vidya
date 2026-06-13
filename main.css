@@ -1,0 +1,161 @@
+.story-cards .story-experience {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    background: radial-gradient(circle at top, #3a1235 0%, #21071e 55%, #160512 100%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.story-cards .story-experience #drag-container,
+.story-cards .story-experience #spin-container {
+    position: relative;
+    display: flex;
+    margin: auto;
+    transform-style: preserve-3d;
+    transform: rotateX(-10deg);
+    z-index: 100;
+}
+
+.story-cards .story-experience #drag-container img,
+.story-cards .story-experience #drag-container video {
+    transform-style: preserve-3d;
+    position: absolute;
+    left: 0;
+    top: 0;
+    object-fit: cover;
+    width: 86px;
+    height: 124px;
+    border: 4px solid #fff;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    box-shadow: rgba(0, 0, 0, 0.2) 1px 4px 7px, rgba(0, 0, 0, 0.34) 1px 3px 6px;
+    transition: box-shadow 0.3s ease;
+}
+
+.story-cards .story-experience #drag-container img:hover,
+.story-cards .story-experience #drag-container video:hover {
+    box-shadow: rgba(255, 255, 255, 0.2) 0 0 12px, rgba(0, 0, 0, 0.4) 1px 3px 8px;
+}
+
+.story-cards .story-experience #drag-container p {
+    line-height: 116px;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(90deg);
+    color: #fff;
+    font-family: "Pacifico", cursive;
+    font-weight: 600;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    text-align: center;
+    animation: storyFadeIn 2s ease forwards;
+}
+
+.story-cards .story-experience .reel-button {
+    height: 48px;
+    padding: 0 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: linear-gradient(135deg, #ff75a0, #ff9a88);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    position: absolute;
+    top: 14%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    animation: showUp 1s forwards;
+    animation-delay: 2.8s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.story-cards .story-experience .reel-button:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 8px 20px rgba(255, 117, 160, 0.4);
+}
+
+.story-cards .story-experience #ground {
+    width: 900px;
+    height: 900px;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(90deg);
+    background: radial-gradient(center center, farthest-side, #9993, transparent);
+}
+
+.story-cards .story-experience #music-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: none;
+}
+
+.story-cards .story-experience #canva {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.story-cards .story-experience #canvas {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+@keyframes spin {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes spinRevert {
+    from {
+        transform: rotateY(360deg);
+    }
+    to {
+        transform: rotateY(0deg);
+    }
+}
+
+@keyframes showUp {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes storyFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .story-cards .story-experience {
+        min-height: 85vh;
+    }
+
+    .story-cards .story-experience #drag-container img,
+    .story-cards .story-experience #drag-container video {
+        width: 74px;
+        height: 108px;
+    }
+
+    .story-cards .story-experience .reel-button {
+        top: 18%;
+    }
+}
